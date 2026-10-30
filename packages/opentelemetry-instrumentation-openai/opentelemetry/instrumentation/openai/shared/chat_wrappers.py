@@ -1,5 +1,4 @@
 import copy
-import json
 import logging
 import threading
 import time
@@ -38,6 +37,7 @@ from opentelemetry.instrumentation.openai.utils import (
     dont_throw,
     ensure_stream_usage,
     is_openai_v1,
+    json_dumps,
     run_async,
     should_emit_events,
     should_send_prompts,
@@ -552,7 +552,7 @@ def _set_input_messages(span, messages):
                 "role": "assistant",
                 "parts": parts,
             })
-    _set_span_attribute(span, GenAIAttributes.GEN_AI_INPUT_MESSAGES, json.dumps(attr_messages))
+    _set_span_attribute(span, GenAIAttributes.GEN_AI_INPUT_MESSAGES, json_dumps(attr_messages))
 
 def _set_completions(span, choices):
     _set_output_messages(span, choices)
@@ -612,7 +612,7 @@ def _set_output_messages(span, choices):
             entry["content_filter_results"] = content_filter_results
         messages.append(entry)
 
-    _set_span_attribute(span, GenAIAttributes.GEN_AI_OUTPUT_MESSAGES, json.dumps(messages))
+    _set_span_attribute(span, GenAIAttributes.GEN_AI_OUTPUT_MESSAGES, json_dumps(messages))
 
 @dont_throw
 def _set_streaming_token_metrics(
